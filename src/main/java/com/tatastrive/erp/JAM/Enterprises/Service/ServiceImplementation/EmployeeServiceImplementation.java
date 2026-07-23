@@ -1,6 +1,8 @@
 package com.tatastrive.erp.JAM.Enterprises.Service.ServiceImplementation;
 
+import com.tatastrive.erp.JAM.Enterprises.Entity.Department;
 import com.tatastrive.erp.JAM.Enterprises.Entity.Employee;
+import com.tatastrive.erp.JAM.Enterprises.Repository.DepartmentRepository;
 import com.tatastrive.erp.JAM.Enterprises.Repository.EmployeeRepository;
 import com.tatastrive.erp.JAM.Enterprises.Service.EmployeeService;
 import com.tatastrive.erp.JAM.Enterprises.dto.EmployeeDTO;
@@ -19,6 +21,8 @@ public class EmployeeServiceImplementation implements EmployeeService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+    @Autowired
+    DepartmentRepository departmentRepository;
 
     @Override
     public EmployeeDTO createEmployee(Employee employee) {
@@ -47,16 +51,26 @@ public class EmployeeServiceImplementation implements EmployeeService {
         Employee existingEmployee =
                employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Employee Not Found"));
 
-
-
             existingEmployee.setEmployeeName(employee.getEmployeeName());
             existingEmployee.setEmail(employee.getEmail());
             existingEmployee.setPhoneNumber(employee.getPhoneNumber());
             existingEmployee.setDesignation(employee.getDesignation());
             existingEmployee.setSalary(employee.getSalary());
             existingEmployee.setJoiningDate(employee.getJoiningDate());
-            existingEmployee.setDepartment(employee.getDepartment());
-            existingEmployee.setAssets(employee.getAssets());
+        if (employee.getDepartment() != null &&
+                employee.getDepartment().getId() != null) {
+
+            Long departmentId = employee.getDepartment().getId();
+
+            Department department = departmentRepository.findById(departmentId)
+                    .orElseThrow(() ->
+                            new RuntimeException(
+                                    "Department not found with id: " + departmentId
+                            )
+                    );
+
+            existingEmployee.setDepartment(department);
+        }
         Employee updatedEmployee = employeeRepository.save(existingEmployee);
 
         return employeeMapper.toDTO(updatedEmployee);
