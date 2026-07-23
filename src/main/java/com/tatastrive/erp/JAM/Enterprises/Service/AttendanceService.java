@@ -1,11 +1,14 @@
 package com.tatastrive.erp.JAM.Enterprises.Service;
 import java.util.List;
 import com.tatastrive.erp.JAM.Enterprises.Entity.Attendance;
+import com.tatastrive.erp.JAM.Enterprises.dto.AttendanceDto;
 
 public interface AttendanceService {
-    Attendance saveAttendance(Attendance attendance);
+    AttendanceDto saveAttendance(Attendance attendance);
 
-    List<Attendance> getAllAttendance();
+    List<AttendanceDto> getAllAttendance();
 
-    Attendance getAttendanceById(Long id);
+    AttendanceDto getAttendanceById(Long id);
+
+    List<AttendanceDto> getAttendanceByEmployee(Long employeeId);
 }
