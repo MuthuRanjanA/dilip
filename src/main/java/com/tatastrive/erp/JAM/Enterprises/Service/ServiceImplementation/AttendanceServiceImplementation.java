@@ -30,19 +30,6 @@ public class AttendanceServiceImplementation implements AttendanceService {
                 .map(attendanceMapper::toDTO)
                 .toList();
     }
-    @Override
-    public AttendanceDto getAttendanceById(Long id) {
-
-        Attendance attendance =
-                attendanceRepository.findById(id).orElse(null);
-
-        if(attendance == null){
-            System.out.println("Not found");
-            return null;
-        }
-
-        return attendanceMapper.toDTO(attendance);
-    }
 
     @Override
     public List<AttendanceDto> getAttendanceByEmployee(Long employeeId) {

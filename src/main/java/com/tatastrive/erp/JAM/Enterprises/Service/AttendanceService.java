@@ -8,7 +8,5 @@ public interface AttendanceService {
 
     List<AttendanceDto> getAllAttendance();
 
-    AttendanceDto getAttendanceById(Long id);
-
     List<AttendanceDto> getAttendanceByEmployee(Long employeeId);
 }
