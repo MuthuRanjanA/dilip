@@ -21,10 +21,7 @@ public class AttendanceController {
     public List<AttendanceDto>getAllAttendance(){
         return attendanceService.getAllAttendance();
     }
-    @GetMapping("/{id}")
-    public AttendanceDto getAttendanceById(@PathVariable Long id) {
-        return attendanceService.getAttendanceById(id);
-    }
+
     @GetMapping("/employee/{employeeId}")
     public List<AttendanceDto> getAttendanceByEmployee(
             @PathVariable Long employeeId) {

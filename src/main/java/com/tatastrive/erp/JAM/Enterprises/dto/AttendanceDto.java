@@ -15,6 +15,8 @@ public class AttendanceDto {
     private Long attendanceId;
     private LocalDate date;
     private String status;
+    private String checkInTime;
+    private String checkOutTime;
 
     private Long employeeId;
     private String employeeName;
