@@ -35,7 +35,47 @@ public class SecurityConfig {
 				.authorizeHttpRequests(req->req
 						.requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-						.requestMatchers("/employees/**","/employees").hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+
+						//employees
+						.requestMatchers(HttpMethod.GET,"/employees/**","/employees")
+						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+
+						.requestMatchers("/employees/**","/employees")
+						.hasAnyAuthority("ADMIN", "HR")
+
+						//departments
+
+						.requestMatchers(HttpMethod.GET,"/departments/**","/departments")
+						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+
+						.requestMatchers("/departments/**","/departments")
+						.hasAnyAuthority("ADMIN", "HR")
+
+						//attendance
+
+						.requestMatchers(HttpMethod.GET, "/attendance", "/attendance/**")
+						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+
+						.requestMatchers( "/attendance", "/attendance/**")
+						.hasAnyAuthority("ADMIN", "HR")
+
+						//assets
+
+						.requestMatchers(HttpMethod.GET, "/asset", "/asset/**")
+						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+
+						.requestMatchers( "/asset", "/asset/**")
+						.hasAnyAuthority("ADMIN", "HR")
+
+						//projects
+
+						.requestMatchers(HttpMethod.GET, "/projects", "/projects/**")
+						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+
+						.requestMatchers( "/projects", "/projects/**")
+						.hasAnyAuthority("ADMIN", "HR")
+
+
 						.anyRequest().authenticated())
 				
 				.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
