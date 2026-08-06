@@ -24,20 +24,15 @@ public class Employee {
 
     @Column(unique = true, nullable = false)
     private String email;
-
     private String phoneNumber;
-
     private String designation;
-
     private Double salary;
-
     private LocalDate joiningDate;
-
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
 @JsonIgnore
     @OneToMany(mappedBy = "employee",cascade = CascadeType.ALL,orphanRemoval = true)
      private List<Asset> assets;
-        // Getters and Setters
+
 }

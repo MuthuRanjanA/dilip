@@ -17,8 +17,5 @@ public class EmployeeDTO {
     private String email;
     private String phoneNumber;
     private String designation;
-
-
-
     private Department department;
 }

@@ -1,10 +1,11 @@
 package com.tatastrive.erp.JAM.Enterprises.Entity;
 
+import com.tatastrive.erp.JAM.Enterprises.ProjectStatus;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,22 +21,25 @@ public class Projects {
 
     @Column(nullable = false)
     private String projectName;
-    private String clientName;
-    private Double budget;
+
+    @Column(length = 1000)
+    private String description;
+
     private LocalDate startDate;
+
     private LocalDate endDate;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProjectStatus status;
 
     @ManyToMany
     @JoinTable(
-            name = "employee_project",
+            name = "project_employee",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "employee_id")
     )
-    private List<Employee> employees;
+    private Set<Employee> employees = new HashSet<>();
 
-    public String getDescription() {
-        return null;
-    }
 }
 
