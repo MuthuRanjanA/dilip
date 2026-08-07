@@ -4,8 +4,12 @@ import java.util.Map;
 
 import com.tatastrive.erp.JAM.Enterprises.Entity.AppUser;
 import com.tatastrive.erp.JAM.Enterprises.Repository.AppUserRepository;
+import com.tatastrive.erp.JAM.Enterprises.Response.ApiResponse;
 import com.tatastrive.erp.JAM.Enterprises.Role;
+import com.tatastrive.erp.JAM.Enterprises.Service.ServiceImplementation.AuthServiceImplementation;
 import com.tatastrive.erp.JAM.Enterprises.dto.AuthResponse;
+import com.tatastrive.erp.JAM.Enterprises.dto.ChangePasswordRequest;
+import com.tatastrive.erp.JAM.Enterprises.dto.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,45 +33,78 @@ public class AuthController {
 	private PasswordEncoder passwordEncoder;
 	@Autowired
 	private AuthenticationManager authManager;
+	@Autowired
+	private AuthServiceImplementation authService;
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthResponse> login(@RequestBody Map<String, String> request) {
+	public ResponseEntity<LoginResponse> login(
+			@RequestBody Map<String, String> request) {
 
-		String username = request.get("email");
+		String email = request.get("email");
 		String password = request.get("password");
 
 		Authentication authentication =
 				authManager.authenticate(
-						new UsernamePasswordAuthenticationToken(username, password)
+						new UsernamePasswordAuthenticationToken(email, password)
 				);
 
-		if (authentication.isAuthenticated()) {
+		AppUser user =
+				userRepo.findByEmail(email)
+						.orElseThrow(() ->
+								new RuntimeException(
+										"User not found"
+								)
+						);
 
-			AppUser user = userRepo.findByEmail(username)
-					.orElseThrow(() -> new RuntimeException("User not found"));
+		String token =
+				jwtService.generateToken(email);
 
-			String token = jwtService.generateToken(username);
+		Long employeeId = null;
+		String employeeName = null;
 
-			AuthResponse response =
-					new AuthResponse(token, user.getRole().toString());
+		if (user.getEmployee() != null) {
+			employeeId =
+					user.getEmployee().getEmployeeId();
 
-			return ResponseEntity.ok(response);
+			employeeName =
+					user.getEmployee().getEmployeeName();
 		}
 
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-	}
-	
-	@PostMapping("/register")
-	public String register(@RequestBody Map<String, String> request)
-	{
-		
-		AppUser newUser = new AppUser();
-		newUser.setName(request.get("name"));
-		newUser.setEmail(request.get("email"));
-		newUser.setPassword(passwordEncoder.encode(request.get("password")) );
-		newUser.setRole( Role.valueOf(request.get("role")) );
-		userRepo.save(newUser);
-		return "register  successfuly";
+		LoginResponse response =
+				new LoginResponse(
+						token,
+						user.getRole().name(),
+						employeeId,
+						employeeName,
+						user.isTemporaryPassword()
+				);
+
+		return ResponseEntity.ok(response);
 	}
 
+
+	@PostMapping("/change-temporary-password")
+	public ResponseEntity<ApiResponse> changeTemporaryPassword(
+			@RequestBody ChangePasswordRequest request) {
+
+		try {
+			authService.changeTemporaryPassword(request);
+
+			return ResponseEntity.ok(
+					new ApiResponse(
+							"Password changed successfully",
+							null
+					)
+			);
+
+		} catch (Exception exception) {
+			return ResponseEntity.badRequest()
+					.body(
+							new ApiResponse(
+									exception.getMessage(),
+									null
+							)
+					);
+		}
+	}
 }

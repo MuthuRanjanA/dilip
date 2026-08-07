@@ -16,6 +16,7 @@ public interface AssetService {
 
     AssetDto getAssetById(Long id);
 
+    List<AssetDto> getAssetsByEmployeeEmail(String email);
 
     List<AssetDto> getAssetByEmployee(Long employeeId);
 

@@ -130,6 +130,16 @@ public class AssetServiceImplementation implements AssetService {
     }
 
     @Override
+    public List<AssetDto> getAssetsByEmployeeEmail(String email) {
+
+        return assetRepository
+                .findByEmployeeEmail(email)
+                .stream()
+                .map(assetMapper::toDTO)
+                .toList();
+    }
+
+    @Override
     public void deleteAsset(Long id) {
 
         Asset asset =
