@@ -33,12 +33,19 @@ public class SecurityConfig {
 				.csrf(csrf->csrf.disable())
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(req->req
-						.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers(
+								"/api/auth/login",
+								"/api/auth/change-temporary-password").permitAll()
+
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 						//employees
+						.requestMatchers(HttpMethod.GET,"/employees/me")
+						.hasAnyAuthority("EMPLOYEE")
 						.requestMatchers(HttpMethod.GET,"/employees/**","/employees")
-						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+						.hasAnyAuthority("ADMIN", "HR")
+
+
 
 						.requestMatchers("/employees/**","/employees")
 						.hasAnyAuthority("ADMIN", "HR")
@@ -60,6 +67,8 @@ public class SecurityConfig {
 						.hasAnyAuthority("ADMIN", "HR")
 
 						//assets
+						.requestMatchers(HttpMethod.GET, "/assets/me")
+						.hasAnyAuthority("EMPLOYEE", "ADMIN", "HR")
 
 						.requestMatchers(HttpMethod.GET, "/asset", "/asset/**")
 						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
