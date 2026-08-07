@@ -1,0 +1,115 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #f4f6f8;
+}
+
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-box {
+  background-color: white;
+  padding: 30px;
+  width: 350px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px gray;
+}
+
+.auth-box h2 {
+  text-align: center;
+}
+
+.auth-box input,
+.auth-box select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.auth-box button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard {
+  padding: 30px;
+  text-align: center;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 30px;
+}
+
+.card {
+  background-color: white;
+  padding: 30px;
+  text-decoration: none;
+  color: black;
+  border-radius: 10px;
+  box-shadow: 0 0 8px lightgray;
+  font-weight: bold;
+}
+
+.page {
+  padding: 30px;
+}
+
+.employee-form {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.employee-form input {
+  padding: 10px;
+}
+
+.employee-form button {
+  padding: 10px;
+  background-color: green;
+  color: white;
+  border: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #0d6efd;
+  color: white;
+}
+
+td button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 7px 12px;
+}
