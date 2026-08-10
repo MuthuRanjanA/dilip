@@ -16,6 +16,9 @@ function Sidebar({ isOpen }) {
 
   const role = localStorage.getItem("role");
 
+  const canManageEmployees =
+  role === "ADMIN" || role === "HR";
+
   const canManagePayroll =
     role === "ADMIN" || role === "HR";
 
@@ -64,14 +67,15 @@ function Sidebar({ isOpen }) {
           {isOpen && <span>Dashboard</span>}
         </NavLink>
 
-        <NavLink
-          to="/employee"
-          className={getLinkClass}
-        >
-          <FaUsers />
-
-          {isOpen && <span>Employees</span>}
-        </NavLink>
+      {canManageEmployees && (
+  <NavLink
+    to="/employee"
+    className={getLinkClass}
+  >
+    <FaUsers />
+    {isOpen && <span>Employees</span>}
+  </NavLink>
+)}
 
         <NavLink
           to="/departments"

@@ -8,6 +8,10 @@ export const getAllAssets = () => {
   return api.get("/asset");
 };
 
+export const getMyAssets = () => {
+  return api.get("/asset/me");
+};
+
 export const updateAsset = (assetId, assetData) => {
   return api.put(`/asset/${assetId}`, assetData);
 };

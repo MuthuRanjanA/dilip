@@ -3,6 +3,7 @@ import api from "../api/axiosInstance";
 import { getDepartments,
   addDepartment,} from "../services/departmentservice";
   import DashboardLayout from "../components/layout/Dashboardlayout";
+  import { useToast } from "../components/common/ToastContext";
   import "../style/department.css";
 
 
@@ -10,6 +11,7 @@ import { getDepartments,
 
 
 function Department() {
+  const toast = useToast();
   const [departments, setDepartments] = useState([]);
   const [departmentName, setDepartmentName] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -39,7 +41,7 @@ function Department() {
     event.preventDefault();
 
     if (!departmentName.trim()) {
-      alert("Please enter the department name");
+      toast.warning("Please enter the department name");
       return;
     }
 
@@ -50,7 +52,7 @@ function Department() {
     api
       .post("/departments", departmentData)
       .then(() => {
-        alert("Department added successfully");
+        toast.success("Department added successfully");
 
         setDepartmentName("");
         setShowForm(false);
@@ -59,7 +61,7 @@ function Department() {
       })
       .catch((error) => {
         console.error("Error adding department:", error);
-        alert("Unable to add department");
+        toast.error("Unable to add department");
       });
   };
 
@@ -72,7 +74,7 @@ function Department() {
       })
       .catch((error) => {
         console.error("Error loading employees:", error);
-        alert("Unable to load employees");
+        toast.error("Unable to load employees");
       });
   };
 

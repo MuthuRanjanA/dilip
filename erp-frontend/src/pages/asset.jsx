@@ -9,10 +9,12 @@ import {
 
 import { getEmployees } from "../services/EmployeeService";
 import DashboardLayout from "../components/layout/Dashboardlayout";
+import { useToast } from "../components/common/ToastContext";
 
 
 
 function Asset() {
+  const toast = useToast();
   const initialForm = {
     assetName: "",
     assetType: "",
@@ -104,12 +106,12 @@ function Asset() {
     event.preventDefault();
 
     if (!assetForm.assetName.trim()) {
-      alert("Please enter the asset name");
+      toast.warning("Please enter the asset name");
       return;
     }
 
     if (!assetForm.assetType.trim()) {
-      alert("Please enter the asset type");
+      toast.warning("Please enter the asset type");
       return;
     }
 
@@ -117,7 +119,7 @@ function Asset() {
       assetForm.status === "ASSIGNED" &&
       !assetForm.employeeId
     ) {
-      alert("Please select an employee");
+      toast.warning("Please select an employee");
       return;
     }
 
@@ -150,7 +152,7 @@ function Asset() {
             ? "Asset updated successfully"
             : "Asset added successfully");
 
-        alert(message);
+        toast.success(message);
 
         resetForm();
         loadAssets();
@@ -158,7 +160,7 @@ function Asset() {
       .catch((error) => {
         console.error("Error saving asset:", error);
 
-        alert(
+        toast.error(
           error.response?.data?.message ||
             "Unable to save asset"
         );
@@ -199,7 +201,7 @@ function Asset() {
 
     deleteAsset(assetId)
       .then((response) => {
-        alert(
+        toast.success(
           response.data.message ||
             "Asset deleted successfully"
         );
@@ -209,7 +211,7 @@ function Asset() {
       .catch((error) => {
         console.error("Error deleting asset:", error);
 
-        alert(
+        toast.error(
           error.response?.data?.message ||
             "Unable to delete asset"
         );
