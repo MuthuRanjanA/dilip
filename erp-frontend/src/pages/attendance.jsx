@@ -10,8 +10,10 @@ import { getEmployees } from "../services/EmployeeService";
 
 import "../style/Attendance.css";
 import DashboardLayout from "../components/layout/Dashboardlayout";
+import { useToast } from "../components/common/ToastContext";
 
 function Attendance() {
+  const toast = useToast();
   const initialForm = {
     employeeId: "",
     date: "",
@@ -92,12 +94,12 @@ function Attendance() {
     event.preventDefault();
 
     if (!attendanceForm.employeeId) {
-      alert("Please select an employee");
+      toast.warning("Please select an employee");
       return;
     }
 
     if (!attendanceForm.date) {
-      alert("Please select an attendance date");
+      toast.warning("Please select an attendance date");
       return;
     }
 
@@ -105,7 +107,7 @@ function Attendance() {
       attendanceForm.status === "PRESENT" &&
       !attendanceForm.checkInTime
     ) {
-      alert("Please enter check-in time");
+      toast.warning("Please enter check-in time");
       return;
     }
 
@@ -113,7 +115,7 @@ function Attendance() {
       attendanceForm.status === "PRESENT" &&
       !attendanceForm.checkOutTime
     ) {
-      alert("Please enter check-out time");
+      toast.warning("Please enter check-out time");
       return;
     }
 
@@ -122,7 +124,7 @@ function Attendance() {
       attendanceForm.checkOutTime <=
         attendanceForm.checkInTime
     ) {
-      alert(
+      toast.warning(
         "Check-out time must be after check-in time"
       );
       return;
@@ -153,7 +155,7 @@ function Attendance() {
 
     addAttendance(attendanceData)
       .then(() => {
-        alert("Attendance saved successfully");
+        toast.success("Attendance saved successfully");
 
         resetForm();
         loadAttendance();
@@ -164,7 +166,7 @@ function Attendance() {
           error
         );
 
-        alert(
+        toast.error(
           error.response?.data?.message ||
             "Unable to save attendance"
         );
