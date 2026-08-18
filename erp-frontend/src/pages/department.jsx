@@ -19,8 +19,9 @@ function Department() {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [departmentEmployees, setDepartmentEmployees] = useState([]);
 
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")?.trim()?.toUpperCase();
   const canModify = role === "ADMIN" || role === "HR";
+  const canManageEmployees = role === "ADMIN" || role === "HR" || role === "MANAGER";
 
   const loadDepartments = () => {
     api
@@ -84,7 +85,7 @@ function Department() {
       <div className="department-header">
         <div>
           <h1>Department Management</h1>
-          <p>Manage company departments and view employees</p>
+          <p>Manage company departments {canManageEmployees && "and view employees"}</p>
         </div>
 
         {canModify && (
@@ -143,9 +144,9 @@ function Department() {
           <table className="department-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th style={{ width: "10%" }}>ID</th>
                 <th>Department Name</th>
-                <th>Employees</th>
+                {canManageEmployees && <th style={{ width: "20%" }}>Employees</th>}
               </tr>
             </thead>
 
@@ -157,6 +158,7 @@ function Department() {
 
                     <td>{department.departmentName}</td>
 
+                    {canManageEmployees && (
                     <td>
                       <button
                         className="view-btn"
@@ -165,11 +167,12 @@ function Department() {
                         View Employees
                       </button>
                     </td>
+                    )}
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="3" className="empty-message">
+                  <td colSpan={canManageEmployees ? 3 : 2} className="empty-message">
                     No departments found
                   </td>
                 </tr>
@@ -179,7 +182,7 @@ function Department() {
         </div>
       </div>
 
-      {selectedDepartment && (
+      {canManageEmployees && selectedDepartment && (
         <div className="department-table-card">
           <div className="table-title">
             <h2>

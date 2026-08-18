@@ -3,6 +3,7 @@ package com.tatastrive.erp.JAM.Enterprises.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
@@ -27,90 +27,98 @@ public class SecurityConfig {
 	private JwtAuthenticationFilter jwtAuthFilter;
 	
 	@Bean
-	public SecurityFilterChain getSecurityFilterChain(HttpSecurity http)
-	{
+	public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
 		return http
-				.csrf(csrf->csrf.disable())
+				.csrf(csrf -> csrf.disable())
 				.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-				.authorizeHttpRequests(req->req
+				.authorizeHttpRequests(req -> req
 						.requestMatchers(
 								"/api/auth/login",
 								"/api/auth/change-temporary-password").permitAll()
 
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-						//employees
-						.requestMatchers(HttpMethod.GET,"/employees/me")
-						.hasAnyAuthority("EMPLOYEE")
-						.requestMatchers(HttpMethod.GET,"/employees/**","/employees")
+						// Users Management
+						.requestMatchers("/api/users/**")
+						.hasAnyAuthority("ADMIN")
+
+						// Employees
+						.requestMatchers(HttpMethod.GET, "/employees/me")
+						.hasAnyAuthority("EMPLOYEE", "MANAGER", "HR", "ADMIN")
+						.requestMatchers(HttpMethod.GET, "/employees/team/**")
+						.hasAnyAuthority("MANAGER", "HR", "ADMIN")
+						.requestMatchers("/employees/**", "/employees")
+						.hasAnyAuthority("HR", "ADMIN")
+
+						// Departments
+						.requestMatchers(HttpMethod.GET, "/departments/**", "/departments")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers("/departments/**", "/departments")
 						.hasAnyAuthority("ADMIN", "HR")
 
-
-
-						.requestMatchers("/employees/**","/employees")
-						.hasAnyAuthority("ADMIN", "HR")
-
-						//departments
-
-						.requestMatchers(HttpMethod.GET,"/departments/**","/departments")
-						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
-
-						.requestMatchers("/departments/**","/departments")
-						.hasAnyAuthority("ADMIN", "HR")
-
-						//attendance
-
+						// Attendance
+						.requestMatchers(HttpMethod.POST, "/attendance/check-in/**", "/attendance/check-out/**")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers(HttpMethod.GET, "/attendance/team/**")
+						.hasAnyAuthority("MANAGER", "HR", "ADMIN")
 						.requestMatchers(HttpMethod.GET, "/attendance", "/attendance/**")
-						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
-
-						.requestMatchers( "/attendance", "/attendance/**")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers("/attendance", "/attendance/**")
 						.hasAnyAuthority("ADMIN", "HR")
 
-						//assets
+						// Leave Requests
+						.requestMatchers(HttpMethod.POST, "/leave")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers(HttpMethod.GET, "/leave/employee/**")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers(HttpMethod.GET, "/leave/team/**")
+						.hasAnyAuthority("MANAGER", "HR", "ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/leave/approve/**", "/leave/reject/**")
+						.hasAnyAuthority("MANAGER", "HR", "ADMIN")
+						.requestMatchers(HttpMethod.GET, "/leave", "/leave/**")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+
+						// Assets
 						.requestMatchers(HttpMethod.GET, "/assets/me")
-						.hasAnyAuthority("EMPLOYEE", "ADMIN", "HR")
-
+						.hasAnyAuthority("EMPLOYEE", "MANAGER", "HR", "ADMIN")
 						.requestMatchers(HttpMethod.GET, "/asset", "/asset/**")
-						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
-
-						.requestMatchers( "/asset", "/asset/**")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers("/asset", "/asset/**")
 						.hasAnyAuthority("ADMIN", "HR")
 
-						//projects
-
+						// Projects
 						.requestMatchers(HttpMethod.GET, "/projects", "/projects/**")
-						.hasAnyAuthority("ADMIN", "HR", "EMPLOYEE")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers("/projects", "/projects/**")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER")
 
-						.requestMatchers( "/projects", "/projects/**")
+						// Payroll
+						.requestMatchers(HttpMethod.GET, "/payroll/employee/**", "/payroll/{id}")
+						.hasAnyAuthority("ADMIN", "HR", "MANAGER", "EMPLOYEE")
+						.requestMatchers("/payroll", "/payroll/**")
 						.hasAnyAuthority("ADMIN", "HR")
-
 
 						.anyRequest().authenticated())
 				
-				.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 				
 				.build();
 	}
 	
 	@Bean
-	public PasswordEncoder getPasswordEncoder()
-	{
+	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
 	@Bean
-	public AuthenticationManager getAuthenticationManager(AuthenticationConfiguration config)
-	{
+	public AuthenticationManager getAuthenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
 	}
 
-
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-
 		CorsConfiguration config = new CorsConfiguration();
-
 		config.setAllowedOrigins(List.of("http://localhost:5173"));
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("*"));

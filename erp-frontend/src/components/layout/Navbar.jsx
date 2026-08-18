@@ -8,17 +8,27 @@ import { useNavigate } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { getMyProfile } from "../../services/EmployeeService";
 import { getMyAssets } from "../../services/AssetService";
+import { useToast } from "../common/ToastContext";
 
 function Navbar({ toggleSidebar }) {
 
-    const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role");
   const email = localStorage.getItem("email");
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const toast = useToast();
 
 
   const [showProfile, setShowProfile] = useState(false);
   const [employee, setEmployee] = useState(null);
   const [assets, setAssets] = useState([]);
+  const [actionsCompleted, setActionsCompleted] = useState(false);
+
+  const handleNotificationClick = () => {
+    if (!actionsCompleted) {
+      toast.info("Please complete the action checklist.");
+      setActionsCompleted(true);
+    }
+  };
 
   const toggleProfile = () => {
   setShowProfile((currentValue) => !currentValue);
@@ -97,10 +107,11 @@ const handleLogout = () => {
           type="button"
           className="notification-button"
           aria-label="Notifications"
+          onClick={handleNotificationClick}
         >
           <FaBell />
 
-          <span className="notification-indicator"></span>
+          {!actionsCompleted && <span className="notification-indicator"></span>}
         </button>
 
       <div
@@ -126,9 +137,10 @@ const handleLogout = () => {
       </div>
 
      {showProfile && (
-  <div className="profile-popup">
+  <div className="profile-popup" onMouseLeave={() => setShowProfile(false)}>
 
-    {role === "EMPLOYEE" && employee ? (
+    {role === "EMPLOYEE" ? (
+      employee ? (
       <>
         <div className="profile-popup-header">
 
@@ -223,8 +235,28 @@ const handleLogout = () => {
         </div>
 
       </>
+      ) : (
+        <div className="profile-popup-info">
+          <p>Loading profile...</p>
+          <button type="button" className="profile-logout-button" onClick={handleLogout}>Logout</button>
+        </div>
+      )
     ) : (
-      <p>Loading profile...</p>
+      <>
+        <div className="profile-popup-header">
+          <div className="profile-popup-initial">
+            {email?.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h4>{email}</h4>
+            <span>{role}</span>
+          </div>
+        </div>
+        <hr />
+        <div className="profile-popup-info">
+          <button type="button" className="profile-logout-button" onClick={handleLogout}>Logout</button>
+        </div>
+      </>
     )}
 
   </div>

@@ -45,6 +45,16 @@ public class EmployeeController {
         return employeeService.getAllEmployees();
     }
 
+    @GetMapping("/team/{managerId}")
+    public ResponseEntity<ApiResponse> getTeamMembers(@PathVariable Long managerId) {
+        try {
+            List<EmployeeDTO> team = employeeService.getTeamMembers(managerId);
+            return ResponseEntity.ok(new ApiResponse("Team members retrieved successfully", team));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> getEmployeeById(@PathVariable Long id) {
         try {

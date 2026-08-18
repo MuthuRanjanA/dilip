@@ -8,7 +8,11 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {
 
-    @Mapping(source = "department" , target = "department")
+    @Mapping(source = "department", target = "department")
+    @Mapping(source = "manager.employeeId", target = "managerId")
+    @Mapping(source = "manager.employeeName", target = "managerName")
     EmployeeDTO toDTO(Employee employee);
-    Employee toEntity(EmployeeDTO dto );
+
+    @Mapping(target = "manager", ignore = true)
+    Employee toEntity(EmployeeDTO dto);
 }

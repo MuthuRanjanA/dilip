@@ -4,6 +4,7 @@ import {
   addAsset,
   deleteAsset,
   getAllAssets,
+  getMyAssets,
   updateAsset,
 } from "../services/assetService";
 
@@ -44,7 +45,9 @@ function Asset() {
   const loadAssets = () => {
     setLoading(true);
 
-    getAllAssets()
+    const assetCall = role === "EMPLOYEE" ? getMyAssets() : getAllAssets();
+
+    assetCall
       .then((response) => {
         const assetData =
           response.data.data ?? response.data;
@@ -60,6 +63,8 @@ function Asset() {
   };
 
   const loadEmployees = () => {
+    if (role === "EMPLOYEE") return;
+
     getEmployees()
       .then((response) => {
         const employeeData =

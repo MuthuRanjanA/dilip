@@ -50,7 +50,7 @@ const showPopup = (
   });
 
 
-  const role = localStorage.getItem("role");
+  const role = localStorage.getItem("role")?.trim()?.toUpperCase();
 
   const canModify = role === "ADMIN" || role === "HR";
 const loadEmployees = async () => {

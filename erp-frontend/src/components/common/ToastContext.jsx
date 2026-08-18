@@ -138,7 +138,7 @@ function ToastContainer({
 }) {
 
   return (
-    <div className="toast-container">
+    <div className="toast-container-root">
 
       {toasts.map((toast) => (
         <ToastItem
@@ -188,7 +188,7 @@ function ToastItem({
       className={`toast-item-card ${type}`}
     >
 
-      <div className="toast-content">
+      <div className="toast-item-content">
 
         <div className="toast-icon">
           {getIcon()}
@@ -200,7 +200,7 @@ function ToastItem({
 
         <button
           type="button"
-          className="toast-close"
+          className="toast-close-btn"
           onClick={onClose}
         >
           <FaTimes />

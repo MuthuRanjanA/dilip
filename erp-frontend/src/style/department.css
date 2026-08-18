@@ -163,6 +163,7 @@
 .department-table td {
   padding: 14px;
   border-bottom: 1px solid #e5e7eb;
+  text-align: left;
 }
 
 .department-table tbody tr:hover {
