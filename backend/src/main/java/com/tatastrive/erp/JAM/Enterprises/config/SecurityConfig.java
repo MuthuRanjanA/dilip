@@ -27,9 +27,9 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthFilter;
 
-	@Value("${app.cors.allowed-origins:http://localhost:5173}")
+	@Value("${app.cors.allowed-origins:https://jamerpapplication.netlify.app/}")
 	private String corsAllowedOrigins;
-	
+
 	@Bean
 	public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
 		return http
@@ -38,7 +38,8 @@ public class SecurityConfig {
 				.authorizeHttpRequests(req -> req
 						.requestMatchers(
 								"/api/auth/login",
-								"/api/auth/change-temporary-password").permitAll()
+								"/api/auth/change-temporary-password")
+						.permitAll()
 
 						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -103,18 +104,18 @@ public class SecurityConfig {
 						.hasAnyAuthority("ADMIN", "HR")
 
 						.anyRequest().authenticated())
-				
+
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-				
+
 				.build();
 	}
-	
+
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	public AuthenticationManager getAuthenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
