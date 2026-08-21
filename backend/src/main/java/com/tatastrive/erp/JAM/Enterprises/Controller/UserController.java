@@ -5,6 +5,7 @@ import com.tatastrive.erp.JAM.Enterprises.Role;
 import com.tatastrive.erp.JAM.Enterprises.Service.UserService;
 import com.tatastrive.erp.JAM.Enterprises.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Value("${app.default-temp-password:TempPassword@123}")
+    private String defaultTempPassword;
 
     @GetMapping
     public ResponseEntity<ApiResponse> getAllUsers() {
@@ -55,7 +59,7 @@ public class UserController {
         try {
             String newPassword = body.get("newPassword");
             if (newPassword == null || newPassword.trim().isEmpty()) {
-                newPassword = "TempPassword@123";
+                newPassword = defaultTempPassword;
             }
             userService.resetPassword(id, newPassword);
             return ResponseEntity.ok(new ApiResponse("Password reset successfully. Temporary password: " + newPassword, newPassword));

@@ -48,7 +48,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
-        final String userEmail = jwtService.extractUsername(jwt);
+        String userEmail = null;
+        try {
+            userEmail = jwtService.extractUsername(jwt);
+        } catch (io.jsonwebtoken.ExpiredJwtException e) {
+            System.out.println("JWT token has expired: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Invalid JWT token: " + e.getMessage());
+        }
 
         if (userEmail != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Employee from "./pages/employee";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Register from "./pages/register";
 import Login from "./pages/login";
 import Dashboard from "./pages/dashboard";
@@ -10,7 +10,7 @@ import Attendance from "./pages/attendance";
 import Asset from "./pages/asset";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Project from "./pages/project";
-import ChangePassword from "./pages/changePassword";
+import ChangePassword from "./pages/ChangePassword";
 import Payroll from "./pages/payroll";
 import UsersPage from "./pages/users";
 import LeaveManagement from "./pages/leave";
@@ -23,7 +23,8 @@ function App() {
     <ToastProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/users" element={<ProtectedRoute><UsersPage /></ProtectedRoute>} />
           <Route path="/employee" element={<ProtectedRoute><Employee /></ProtectedRoute>} />
@@ -36,6 +37,7 @@ function App() {
           <Route path="/projects" element={<ProtectedRoute><Project /></ProtectedRoute>} />
           <Route path="/payroll" element={<ProtectedRoute><Payroll /></ProtectedRoute>} />
           <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </ToastProvider>

@@ -50,7 +50,7 @@ const loginUser = async (e) => {
     } = response.data;
 
     localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
+    localStorage.setItem("role", role?.trim()?.toUpperCase() || "EMPLOYEE");
     localStorage.setItem(
       "email",
       loginData.email
@@ -78,7 +78,12 @@ const loginUser = async (e) => {
     navigate("/dashboard");
 
   } catch (error) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("employeeId");
+    localStorage.removeItem("employeeName");
     toast.error("Invalid email or password");
+    navigate("/login", { replace: true });
   }
 };
 
