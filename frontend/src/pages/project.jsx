@@ -7,12 +7,12 @@ import {
   updateProject,
   deleteProject,
   assignEmployeeToProject,
-} from "../services/ProjectService";
+} from "../services/projectservice";
 
 import { getEmployees } from "../services/EmployeeService";
 import DashboardLayout from "../components/layout/Dashboardlayout";
-import "../style/Project.css";
-import Dashboard from "./Dashboard";
+import "../style/project.css";
+import Dashboard from "./dashboard";
 
 const initialProjectForm = {
   projectName: "",

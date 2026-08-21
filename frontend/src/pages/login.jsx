@@ -6,7 +6,7 @@ import api from "../api/axiosInstance";
 import BrandPanel from "../components/layout/BrandPanel";
 import { useToast } from "../components/common/ToastContext";
 
-import "../style/Auth.css";
+import "../style/auth.css";
 
 function Login() {
   const navigate = useNavigate();

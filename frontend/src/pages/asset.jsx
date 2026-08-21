@@ -6,7 +6,7 @@ import {
   getAllAssets,
   getMyAssets,
   updateAsset,
-} from "../services/assetService";
+} from "../services/assetservice";
 
 import { getEmployees } from "../services/EmployeeService";
 import DashboardLayout from "../components/layout/Dashboardlayout";

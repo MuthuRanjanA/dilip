@@ -3,7 +3,7 @@ import {
   getAttendanceStatus,
   getShiftsSummary
 } from "../services/attendanceservice";
-import "../style/Attendance.css";
+import "../style/attendance.css";
 import DashboardLayout from "../components/layout/Dashboardlayout";
 import { useToast } from "../components/common/ToastContext";
 

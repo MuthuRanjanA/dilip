@@ -3,7 +3,7 @@ import DashboardLayout from "../components/layout/Dashboardlayout";
 import { getAttendanceByDate, getAttendanceByMonth } from "../services/attendanceservice";
 import { getDepartments } from "../services/departmentservice";
 import { FaFileCsv, FaFilter, FaCalendarAlt, FaDownload, FaTable } from "react-icons/fa";
-import "../style/Reports.css";
+// import "../style/Reports.css";
 
 function ReportsPage() {
   const [reportType, setReportType] = useState("daily"); // 'daily' or 'monthly'

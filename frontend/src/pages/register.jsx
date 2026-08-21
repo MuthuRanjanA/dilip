@@ -12,7 +12,7 @@ import {
 import api from "../api/axiosInstance";
 import BrandPanel from "../components/layout/BrandPanel";
 
-import "../style/Auth.css";
+import "../style/auth.css";
 
 function Register() {
   const navigate = useNavigate();
