@@ -7,7 +7,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useState,useEffect } from "react";
 import { getMyProfile } from "../../services/EmployeeService";
-import { getMyAssets } from "../../services/AssetService";
+import { getMyAssets } from "../../services/assetservice";
 import { useToast } from "../common/ToastContext";
 
 function Navbar({ toggleSidebar }) {
