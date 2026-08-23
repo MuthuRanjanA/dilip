@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: erp-backend
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    region: singapore
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://jamerpapplication.netlify.app,http://localhost:5173
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@jam.com
+      - key: ADMIN_PASSWORD
+        value: "1234"
+      - key: DEFAULT_TEMP_PASSWORD
+        value: TempPassword@123

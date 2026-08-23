@@ -27,7 +27,7 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthFilter;
 
-	@Value("${app.cors.allowed-origins:https://jamerpapplication.netlify.app,http://localhost:5173,http://localhost:3000}")
+	@Value("${app.cors.allowed-origins:https://*.vercel.app,https://jamerpapplication.netlify.app,http://localhost:5173,http://localhost:3000}")
 	private String corsAllowedOrigins;
 
 	@Bean
@@ -129,7 +129,12 @@ public class SecurityConfig {
 				.map(o -> o.endsWith("/") ? o.substring(0, o.length() - 1) : o)
 				.filter(o -> !o.isEmpty())
 				.collect(java.util.stream.Collectors.toList());
-		config.setAllowedOrigins(origins);
+
+		if (origins.stream().noneMatch(o -> o.contains("vercel.app"))) {
+			origins.add("https://*.vercel.app");
+		}
+
+		config.setAllowedOriginPatterns(origins);
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		config.setAllowedHeaders(List.of("*"));
 		config.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
