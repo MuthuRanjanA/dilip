@@ -27,7 +27,7 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthenticationFilter jwtAuthFilter;
 
-	@Value("${app.cors.allowed-origins:https://jamerpapplication.netlify.app/}")
+	@Value("${app.cors.allowed-origins:https://jamerpapplication.netlify.app,http://localhost:5173,http://localhost:3000}")
 	private String corsAllowedOrigins;
 
 	@Bean
@@ -124,10 +124,17 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
-		config.setAllowedOrigins(List.of(corsAllowedOrigins.split(",")));
-		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		List<String> origins = java.util.Arrays.stream(corsAllowedOrigins.split(","))
+				.map(String::trim)
+				.map(o -> o.endsWith("/") ? o.substring(0, o.length() - 1) : o)
+				.filter(o -> !o.isEmpty())
+				.collect(java.util.stream.Collectors.toList());
+		config.setAllowedOrigins(origins);
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 		config.setAllowedHeaders(List.of("*"));
+		config.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
 		config.setAllowCredentials(true);
+		config.setMaxAge(3600L);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", config);

@@ -31,61 +31,66 @@ function Login() {
 
     setErrorMessage("");
   };
-const loginUser = async (e) => {
-  e.preventDefault();
+  const loginUser = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
 
-  try {
-    const response =
-      await api.post(
+    try {
+      const response = await api.post(
         "/api/auth/login",
         loginData
       );
 
-    const {
-      token,
-      role,
-      employeeId,
-      employeeName,
-      temporaryPassword,
-    } = response.data;
+      const {
+        token,
+        role,
+        employeeId,
+        employeeName,
+        temporaryPassword,
+      } = response.data;
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role?.trim()?.toUpperCase() || "EMPLOYEE");
-    localStorage.setItem(
-      "email",
-      loginData.email
-    );
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role?.trim()?.toUpperCase() || "EMPLOYEE");
+      localStorage.setItem("email", loginData.email);
 
-    if (employeeId !== null) {
-      localStorage.setItem(
-        "employeeId",
-        employeeId
-      );
+      if (employeeId !== null && employeeId !== undefined) {
+        localStorage.setItem("employeeId", employeeId);
+      }
+
+      if (employeeName) {
+        localStorage.setItem("employeeName", employeeName);
+      }
+
+      toast.success("Signed in successfully!");
+
+      if (temporaryPassword) {
+        navigate("/change-password");
+        return;
+      }
+
+      navigate("/dashboard");
+
+    } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
+      localStorage.removeItem("employeeId");
+      localStorage.removeItem("employeeName");
+
+      const msg =
+        error.response?.data?.message ||
+        (error.code === "ECONNABORTED"
+          ? "Server is waking up (Render cold start). Please retry in a moment."
+          : !error.response
+          ? "Cannot connect to server. Please check your internet or server status."
+          : "Invalid email or password");
+
+      setErrorMessage(msg);
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
     }
-
-    if (employeeName) {
-      localStorage.setItem(
-        "employeeName",
-        employeeName
-      );
-    }
-
-    if (temporaryPassword) {
-      navigate("/change-password");
-      return;
-    }
-
-    navigate("/dashboard");
-
-  } catch (error) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("employeeId");
-    localStorage.removeItem("employeeName");
-    toast.error("Invalid email or password");
-    navigate("/login", { replace: true });
-  }
-};
+  };
 
   return (
     <main className="auth-page">

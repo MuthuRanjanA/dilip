@@ -4,3 +4,12 @@
 
 # MacOS
 .DS_Store
+
+# Local database & logs
+backend/data/
+*.mv.db
+hs_err_*.log
+
+# Node
+node_modules/
+dist/
